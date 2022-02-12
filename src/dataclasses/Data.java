@@ -1,6 +1,11 @@
 package dataclasses;
 
+import com.google.gson.annotations.SerializedName;
+
 public abstract class Data {
+    public static final String HASH = "hash";
+
+    @SerializedName(HASH)
     protected final String hash;
 
     protected Data(){

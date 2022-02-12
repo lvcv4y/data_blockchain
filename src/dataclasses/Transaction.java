@@ -1,15 +1,30 @@
 package dataclasses;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Transaction extends Data {
-    public final String fromAddr;
-    public final String toAddr;
+    public static final String FROM_ADDRESS = "from_addr";
+    public static final String TO_ADDRESS = "to_addr";
+    public static final String AMOUNT = "amount";
+    public static final String SIGNATURE = "signature";
 
-    public final double amount;
+    @SerializedName(FROM_ADDRESS)
+    private final String fromAddr;
 
-    public Transaction(String fromAddr, String toAddr, double amount) {
+    @SerializedName(TO_ADDRESS)
+    private final String toAddr;
+
+    @SerializedName(AMOUNT)
+    private final double amount;
+
+    @SerializedName(SIGNATURE)
+    private final String signature; // hash of transaction signed with private key of fromAddr
+
+    public Transaction(String fromAddr, String toAddr, double amount, String signature) {
         this.fromAddr = fromAddr;
         this.toAddr = toAddr;
         this.amount = amount;
+        this.signature = signature;
     }
 
     public String getFromAddr() {
@@ -24,8 +39,20 @@ public class Transaction extends Data {
         return amount;
     }
 
+    public String getSignature(){
+        return this.signature;
+    }
+
     @Override
     public String computeHash() {
+        // todo compute hash
+        // note: do not use the signature field to compute the hash
+        // as it is the signed hash of the transaction
+        return "HASH";
+    }
+
+    private String getSignature(String privateKey){
+        // todo sign et return transaction hash
         return null;
     }
 }

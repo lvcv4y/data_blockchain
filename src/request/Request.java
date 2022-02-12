@@ -1,21 +1,34 @@
 package request;
 
+import com.google.gson.annotations.SerializedName;
 import dataclasses.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Request {
 
-    public final RequestTypes type;
+    public static final String TYPE = "type";
+    public static final String ERROR_CODE = "error_code";
+    public static final String DATA = "data";
 
-    public final ErrorCodes error;
+    @SerializedName(TYPE)
+    private final RequestTypes type;
 
-    public final List<Data> data;
+    @SerializedName(ERROR_CODE)
+    private final ErrorCodes error;
+
+    @SerializedName(DATA)
+    private final List<Data> data;
 
     public Request(RequestTypes type, ErrorCodes error, List<Data> data){
         this.type = type;
         this.error = error;
-        this.data = data;
+
+        if(data == null)
+            this.data = new ArrayList<>();
+        else
+            this.data = data;
     }
 
     public Request(RequestTypes type){
@@ -29,4 +42,23 @@ public class Request {
     public Request(RequestTypes type, List<Data> data){
         this(type, ErrorCodes.NO_ERROR, data);
     }
+
+    public RequestTypes getType() {
+        return type;
+    }
+
+    public ErrorCodes getError() {
+        return error;
+    }
+
+    public List<Data> getData() {
+        return data;
+    }
+
+    public void addData(Data d){
+        data.add(d);
+    }
+
+    // todo data hash to verify integrity ?
+    // if so, should be override in the SignedRequest
 }

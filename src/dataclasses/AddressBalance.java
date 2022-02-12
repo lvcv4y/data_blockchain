@@ -1,8 +1,16 @@
 package dataclasses;
 
+import com.google.gson.annotations.SerializedName;
+
 public class AddressBalance extends Data {
 
+    public static final String ADDRESS = "address";
+    public static final String BALANCE = "balance";
+
+    @SerializedName(ADDRESS)
     private final String address;
+
+    @SerializedName(BALANCE)
     private final double balance;
 
     public AddressBalance(String address, double balance){
@@ -20,6 +28,7 @@ public class AddressBalance extends Data {
 
     @Override
     public String computeHash() {
-        return null;
+        // todo compute hash
+        return "HASH";
     }
 }

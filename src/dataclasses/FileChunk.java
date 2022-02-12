@@ -1,25 +1,33 @@
 package dataclasses;
 
+import com.google.gson.annotations.SerializedName;
+
 public class FileChunk extends Data {
+    public static final String NAME = "name";
+    public static final String FILE_DATA = "file_data";
 
-    public final String name; // name of the file ; might be an int, or a hash, not set for the moment
-    public final String fileChunk;
+    @SerializedName(NAME)
+    public final String name; // signed hash of filechunk, so we can identify the author of the file
 
-    public FileChunk(String name, String fileChunk){
+    @SerializedName(FILE_DATA)
+    public final String data;
+
+    public FileChunk(String name, String data){
         this.name = name;
-        this.fileChunk = fileChunk;
+        this.data = data;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getFileChunk() {
-        return fileChunk;
+    public String getData() {
+        return data;
     }
 
     @Override
     public String computeHash() {
-        return null;
+        // todo compute hash
+        return "HASH";
     }
 }
