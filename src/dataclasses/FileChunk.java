@@ -25,6 +25,12 @@ public class FileChunk extends Data {
         return data;
     }
 
+    public boolean isSignatureValid(){
+        // todo verify that the name field is the hash of the data
+        // signed by the private key of the author.
+        return name != null;
+    }
+
     @Override
     public String computeHash() {
         // todo compute hash
