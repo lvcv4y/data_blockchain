@@ -1,4 +1,4 @@
-package threads;
+package network_management;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

@@ -1,4 +1,4 @@
-package threads;
+package network_management;
 
 import com.google.gson.JsonParseException;
 import dataclasses.ReceivedRequest;
