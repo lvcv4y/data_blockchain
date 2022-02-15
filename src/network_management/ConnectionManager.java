@@ -13,15 +13,18 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ConnectionManager {
 
     private static final List<AsynchronousSocketChannel> socketChannels = new ArrayList<>();
-    private static final List<RequestListener> listeners = new ArrayList<>();
+    private static final List<RequestListener> listeners = new ArrayList<>(Collections.singletonList(
+            (from, req) -> {
+                if(req.getType().equals(RequestTypes.ECHO))
+                    answer(new Request(RequestTypes.ECHO_RESPONSE), from);
+            }
+    ));
     private static final HashMap<String, ReceivedRequest> receivedRequestMap = new HashMap<>();
 
     public static boolean registerListener(RequestListener listener){
@@ -44,8 +47,8 @@ public class ConnectionManager {
         sendRequestIf(req, to::equals);
     }
 
-    public static void broadcastRequest(Request req){
-        sendRequestIf(req, (ignored) -> true);
+    public static void broadcastRequest(Request req, InetSocketAddress from){
+        sendRequestIf(req, (address) -> !from.equals(address));
     }
 
     public static void sendRequestIf(Request req, Predicate<InetSocketAddress> condition){
@@ -107,9 +110,6 @@ public class ConnectionManager {
                 l.onRequestReceived(from, req);
             }
         }
-
-        if(req.getType() == RequestTypes.ECHO)
-            broadcastRequest(new Request(RequestTypes.ECHO_RESPONSE));
 
         // purge the whole map to avoid memory leaks.
         // Note : we do NOT forget the request even though the sender
