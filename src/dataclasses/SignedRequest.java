@@ -48,6 +48,7 @@ public class SignedRequest extends Request {
         return hash;
     }
 
+    @Override
     public String computeHash(){
         // todo compute hash
         // note: do not take the signature field in consideration

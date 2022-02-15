@@ -6,7 +6,7 @@ import dataclasses.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Request {
+public class Request extends Data {
 
     public static final String TYPE = "type";
     public static final String ERROR_CODE = "error_code";
@@ -59,6 +59,10 @@ public class Request {
         data.add(d);
     }
 
-    // todo data hash to verify integrity ?
-    // if so, should be override in the SignedRequest
+    @Override
+    public String computeHash() {
+        // todo compute hash
+
+        return "HASH";
+    }
 }
