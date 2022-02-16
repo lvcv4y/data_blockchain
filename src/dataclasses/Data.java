@@ -8,15 +8,14 @@ public abstract class Data {
 
     @SerializedName(HASH)
     @Expose
-    protected final String hash;
-
-    protected Data(){
-        this.hash = computeHash();
-    }
+    private String hash;
 
     abstract public String computeHash();
 
     public String getHash(){
+        if(hash == null)
+            hash = computeHash();
+
         return hash;
     }
 }
