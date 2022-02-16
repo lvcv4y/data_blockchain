@@ -2,7 +2,12 @@ package request;
 
 import com.google.gson.annotations.SerializedName;
 import dataclasses.Data;
+import dataclasses.ReceivedRequest;
+import utils.Cryptography;
 
+import java.math.BigInteger;
+import java.net.InetSocketAddress;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,10 +64,17 @@ public class Request extends Data {
         data.add(d);
     }
 
-    @Override
-    public String computeHash() {
-        // todo compute hash
+    public ReceivedRequest wrap(InetSocketAddress from, LocalDateTime time){
+        return new ReceivedRequest(this, from, time);
+    }
 
-        return "HASH";
+    @Override
+    public BigInteger computeHash() {
+        final String dataHash = Cryptography.getHexFromHash(Cryptography.getSHA256HashUsingMerkelTree(data));
+        final String otherFieldsHash = Cryptography.getHexFromHash(
+                Cryptography.getSHA256HashFromString(type + "#" + error.toString())
+        );
+
+        return Cryptography.getSHA256HashFromString(otherFieldsHash + "#" + dataHash);
     }
 }

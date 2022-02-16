@@ -1,6 +1,9 @@
 package dataclasses;
 
 import com.google.gson.annotations.SerializedName;
+import utils.Cryptography;
+
+import java.math.BigInteger;
 
 public class AddressBalance extends Data {
 
@@ -27,8 +30,8 @@ public class AddressBalance extends Data {
     }
 
     @Override
-    public String computeHash() {
-        // todo compute hash
-        return "HASH";
+    public BigInteger computeHash() {
+        final String toDigest = address + "#" + balance;
+        return Cryptography.getSHA256HashFromString(toDigest);
     }
 }

@@ -2,20 +2,27 @@ package dataclasses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import utils.Cryptography;
+
+import java.math.BigInteger;
 
 public abstract class Data {
     public static final String HASH = "hash";
 
     @SerializedName(HASH)
     @Expose
-    private String hash;
+    private BigInteger hash;
 
-    abstract public String computeHash();
+    abstract public BigInteger computeHash();
 
-    public String getHash(){
+    public BigInteger getHash(){
         if(hash == null)
             hash = computeHash();
 
         return hash;
+    }
+
+    public String getStringHash(){
+        return Cryptography.getHexFromHash(getHash());
     }
 }

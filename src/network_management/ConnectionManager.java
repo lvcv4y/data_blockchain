@@ -7,6 +7,7 @@ import request.Request;
 import request.RequestTypes;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -25,7 +26,7 @@ public class ConnectionManager {
                     answer(new Request(RequestTypes.ECHO_RESPONSE), from);
             }
     ));
-    private static final HashMap<String, ReceivedRequest> receivedRequestMap = new HashMap<>();
+    private static final HashMap<BigInteger, ReceivedRequest> receivedRequestMap = new HashMap<>();
 
     public static boolean registerListener(RequestListener listener){
         return listeners.add(listener);
@@ -74,7 +75,7 @@ public class ConnectionManager {
 
     public static void handleReceivedRequest(InetSocketAddress from, Request req){
 
-        ReceivedRequest received = new ReceivedRequest(req, from, LocalDateTime.now());
+        ReceivedRequest received = req.wrap(from, LocalDateTime.now());
         ReceivedRequest oldReceivedRequest = receivedRequestMap.get(received.getHash());
 
         if(oldReceivedRequest != null) {

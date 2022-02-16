@@ -1,25 +1,27 @@
 package dataclasses;
 
 import request.Request;
+import utils.Cryptography;
 
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 
 
-public class ReceivedRequest extends Data {
+public class ReceivedRequest extends Request {
     // used to memorize received requests, to limit spam on the network
+    // extends data because hash used to quickly determine if two object are the same
 
     // number of minutes after which we "forget" this request instance
     public static final int TIMEOUT = 10;
 
-    private final Request request;
     private final InetSocketAddress senderAddress;
     private LocalDateTime time;
     private int counter;
 
 
     public ReceivedRequest(Request r, InetSocketAddress senderAddress, LocalDateTime time) {
-        this.request = r;
+        super(r.getType(), r.getError(), r.getData());
         this.senderAddress = senderAddress;
         this.time = time;
         counter = 1;
@@ -38,10 +40,6 @@ public class ReceivedRequest extends Data {
         return LocalDateTime.now().isAfter(time.plusMinutes(TIMEOUT));
     }
 
-    public Request getRequest() {
-        return request;
-    }
-
     public InetSocketAddress getSenderAddress() {
         return senderAddress;
     }
@@ -51,13 +49,15 @@ public class ReceivedRequest extends Data {
     }
 
     @Override
-    public String computeHash() {
-        // todo compute hash
+    public BigInteger computeHash() {
         // note : do not take in consideration the counter and time field
         // as this hash will be used to compare two instances
         // and time and counter should not be taken in consideration
         // in this comparison.
         // note : use r.getHash() to compute this one more efficiently
-        return "HASH";
+        final String toDigest = super.getHash() + "#" +
+                senderAddress.getHostName() + "#" + senderAddress.getPort();
+
+        return Cryptography.getSHA256HashFromString(toDigest);
     }
 }

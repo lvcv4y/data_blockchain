@@ -1,7 +1,9 @@
 package dataclasses;
 
 import com.google.gson.annotations.SerializedName;
+import utils.Cryptography;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class CurrentBlock extends Block {
@@ -28,8 +30,12 @@ public class CurrentBlock extends Block {
     }
 
     @Override
-    public String computeHash() {
-        //todo compute hash
-        return "HASH";
+    public BigInteger computeHash() {
+        final String filesHash = Cryptography.getHexFromHash(Cryptography.getSHA256HashUsingMerkelTree(fileChunks));
+        final String transactionsHash = Cryptography.getHexFromHash(
+                Cryptography.getSHA256HashUsingMerkelTree(pendingTransactions)
+        );
+
+        return Cryptography.getSHA256HashFromString(lastBlocHash + "#" + filesHash + "#" + transactionsHash);
     }
 }

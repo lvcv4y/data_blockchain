@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import request.ErrorCodes;
 import request.Request;
 import request.RequestTypes;
+import utils.Cryptography;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class SignedRequest extends Request {
@@ -21,15 +23,12 @@ public class SignedRequest extends Request {
     @SerializedName(AUTHOR_IP)
     private final String authorIp;
 
-    private final String hash;
-
     public SignedRequest(RequestTypes type, ErrorCodes errorCodes, List<Data> data,
                          String signature, String authorPublicKey, String authorIp){
         super(type, errorCodes, data);
         this.signature = signature;
         this.authorPublicKey = authorPublicKey;
         this.authorIp = authorIp;
-        this.hash = computeHash();
     }
 
     public String getSignature() {
@@ -44,15 +43,12 @@ public class SignedRequest extends Request {
         return authorIp;
     }
 
-    public String getHash() {
-        return hash;
-    }
-
     @Override
-    public String computeHash(){
-        // todo compute hash
-        // note: do not take the signature field in consideration
-        // as it is the object's hash signed by the author private key
-        return "HASH";
+    public BigInteger computeHash(){
+        // note : we do not take the signature field in consideration
+        // as it is the object's hash signed by the author private key.
+        final String toDigest = super.getHash() + "#" +
+                authorPublicKey + "#" + authorIp;
+        return Cryptography.getSHA256HashFromString(toDigest);
     }
 }

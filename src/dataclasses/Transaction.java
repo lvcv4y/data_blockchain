@@ -1,6 +1,9 @@
 package dataclasses;
 
 import com.google.gson.annotations.SerializedName;
+import utils.Cryptography;
+
+import java.math.BigInteger;
 
 public class Transaction extends Data {
     public static final String FROM_ADDRESS = "from_addr";
@@ -44,22 +47,11 @@ public class Transaction extends Data {
         return this.signature;
     }
 
-    private String getSignature(String privateKey){
-        // todo sign et return transaction hash
-        return null;
-    }
-
-    public boolean isSignatureValid(){
-        // todo verify that the signature field is the hash of the transaction
-        // signed by the private key corresponding to the fromAddr one.
-        return signature != null && fromAddr != null;
-    }
-
     @Override
-    public String computeHash() {
-        // todo compute hash
-        // note: do not use the signature field to compute the hash
+    public BigInteger computeHash() {
+        // we do not use the signature field to compute the hash
         // as it is the signed hash of the transaction
-        return "HASH";
+        final String toDigest = fromAddr + "#" + toAddr + "#" + amount;
+        return Cryptography.getSHA256HashFromString(toDigest);
     }
 }

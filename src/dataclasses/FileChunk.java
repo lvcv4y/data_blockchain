@@ -1,6 +1,9 @@
 package dataclasses;
 
 import com.google.gson.annotations.SerializedName;
+import utils.Cryptography;
+
+import java.math.BigInteger;
 
 public class FileChunk extends Data {
     public static final String NAME = "name";
@@ -25,15 +28,10 @@ public class FileChunk extends Data {
         return data;
     }
 
-    public boolean isSignatureValid(){
-        // todo verify that the name field is the hash of the data
-        // signed by the private key of the author.
-        return name != null;
-    }
-
     @Override
-    public String computeHash() {
-        // todo compute hash
-        return "HASH";
+    public BigInteger computeHash() {
+        // we don't take "name field in consideration", as
+        // it is already the data hash signed by the author.
+        return Cryptography.getSHA256HashFromString(data);
     }
 }
